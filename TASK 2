@@ -1,0 +1,68 @@
+import java.util.Scanner;
+import java.util.stream.IntStream;
+
+public class StudentGradeCalculator {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Improved input handling with validation and informative messages
+        int totalSubjects = getValidInput("Enter the number of subjects: ", scanner);
+        int[] marks = new int[totalSubjects];
+        for (int i = 0; i < totalSubjects; i++) {
+            marks[i] = getValidInput(String.format("Enter marks for subject %d (out of 100): ", i + 1), scanner);
+        }
+
+        // Efficient total calculation using stream
+        int totalMarks = IntStream.of(marks).sum();
+
+        // Clear and concise average calculation
+        double averagePercentage = (totalMarks / totalSubjects);
+
+        // Effective grade calculation with improved readability
+        String grade = calculateGrade(averagePercentage);
+
+        // User-friendly output formatting
+        System.out.println("=====================");
+        System.out.println("Student Grade Report:");
+        System.out.println("=====================");
+        System.out.println("Total Marks: " + totalMarks);
+        System.out.println("Average Percentage: " + averagePercentage + "%");
+        System.out.println("Grade: " + grade);
+
+        scanner.close();
+    }
+
+    private static int getValidInput(String prompt, Scanner scanner) {
+        int input;
+        do {
+            System.out.print(prompt);
+            if (scanner.hasNextInt()) {
+                input = scanner.nextInt();
+                // Improved validation message
+                if (input <= 0) {
+                    System.out.println("Invalid input: Please enter a positive integer.");
+                } else {
+                    return input;
+                }
+            } else {
+                System.out.println("Invalid input: Please enter an integer.");
+                scanner.next(); // Clear invalid input from scanner
+            }
+        } while (true);
+    }
+
+    private static String calculateGrade(double averagePercentage) {
+        if (averagePercentage >= 90) {
+            return "A";
+        } else if (averagePercentage >= 80) {
+            return "B";
+        } else if (averagePercentage >= 70) {
+            return "C";
+        } else if (averagePercentage >= 60) {
+            return "D";
+        } else {
+            return "F";
+        }
+    }
+}
