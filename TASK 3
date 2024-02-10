@@ -1,0 +1,118 @@
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class AtmSimulator {
+
+    public static void main(String[] args) {
+        // Create user account with initial balance
+        BankAccount account = new BankAccount(5000.00);
+
+        // Create ATM instance
+        Atm atm = new Atm(account);
+
+        // Start ATM session
+        atm.run();
+    }
+}
+
+class Atm {
+    private final BankAccount account;
+    private final Scanner scanner = new Scanner(System.in);
+
+    public Atm(BankAccount account) {
+        this.account = account;
+    }
+
+    public void run() {
+        int choice=0;
+
+        do {
+            System.out.println("\nWelcome to the ATM!");
+            System.out.println("1. Check Balance");
+            System.out.println("2. Withdraw Cash");
+            System.out.println("3. Deposit Cash");
+            System.out.println("4. Exit");
+            System.out.print("Enter your choice: ");
+
+            try {
+                choice = scanner.nextInt();
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a number between 1 and 4.");
+                scanner.nextLine(); // Clear invalid input
+                continue;
+            }
+            
+            switch (choice) {
+                case 1:
+                    checkBalance();
+                    break;
+                case 2:
+                    withdrawCash();
+                    break;
+                case 3:
+                    depositCash();
+                    break;
+                case 4:
+                    System.out.println("Thank you for using the ATM. Goodbye!");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        } while (choice != 4);
+    }
+
+    private void checkBalance() {
+        System.out.printf("Your balance is: $%.2f\n", account.getBalance());
+    }
+
+    private void withdrawCash() {
+        System.out.print("Enter amount to withdraw: $");
+        double amount = scanner.nextDouble();
+
+        if (amount <= 0) {
+            System.out.println("Invalid amount. Please enter a positive value.");
+            return;
+        }
+
+        if (account.getBalance() < amount) {
+            System.out.println("Insufficient funds. Please enter an amount less than or equal to your balance.");
+            return;
+        }
+
+        account.withdraw(amount);
+        System.out.printf("Withdrawal successful. Your new balance is: $%.2f\n", account.getBalance());
+    }
+
+    private void depositCash() {
+        System.out.print("Enter amount to deposit: $");
+        double amount = scanner.nextDouble();
+
+        if (amount <= 0) {
+            System.out.println("Invalid amount. Please enter a positive value.");
+            return;
+        }
+
+        account.deposit(amount);
+        System.out.printf("Deposit successful. Your new balance is: $%.2f\n", account.getBalance());
+    }
+}
+
+class BankAccount {
+    private double balance;
+
+    public BankAccount(double initialBalance) {
+        this.balance = initialBalance;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void withdraw(double amount) {
+        balance -= amount;
+    }
+
+    public void deposit(double amount) {
+        balance += amount;
+    }
+}
